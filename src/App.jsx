@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { site, hero, filters, projects, archive, testimonials, contact } from './content.js'
+import { site, hero, filters, projects, archive, testimonials, contact, caseStudies } from './content.js'
 import './App.css'
 
 function Placeholder({ label, className = '', style }) {
@@ -42,7 +42,8 @@ function Nav({ onGreen }) {
 }
 
 function PillIcon({ type }) {
-  if (type === 'avatar') return <span className="pill__avatar" />
+  if (type === 'avatar')
+    return <span className="pill__avatar" style={hero.portrait && { backgroundImage: `url(${hero.portrait})` }} />
   if (type === 'laptop')
     return (
       <svg className="pill__icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -138,12 +139,16 @@ function Work() {
         {shown.map((p) => (
           <article className="card reveal" key={p.title}>
             <a href={p.href} className="card__media" style={{ background: p.tint }}>
-              {p.image ? <img src={p.image} alt="" /> : <Placeholder label="Project visual" />}
+              {p.image ? (
+                <img src={p.image} alt="" className={p.fit} />
+              ) : (
+                <Placeholder label="Project visual" />
+              )}
             </a>
             <p className="card__meta">
               {p.category} <i>•</i> <span>{p.tag}</span>
             </p>
-            <h3 className="card__title">{p.title}</h3>
+            <h3 className="card__title"><a href={p.href} className="card__link">{p.title}</a></h3>
             <p className="card__desc">{p.description}</p>
             <a href={p.href} className="card__btn" aria-label={`Open ${p.title}`}>
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -161,7 +166,7 @@ function Archive() {
   const peek = archive.items.slice(0, 3)
   return (
     <section className="archive dots">
-      <a href="#" className="folder reveal">
+      <a href="#/archive" className="folder reveal" aria-label={`Open ${archive.title}`}>
         <div className="folder__back" />
         <div className="folder__tab" />
         {peek.map((img, i) => (
@@ -227,12 +232,200 @@ function Contact({ sectionRef }) {
   )
 }
 
+function CaseStudy({ study }) {
+  useReveal()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  // Everything past `sections` is optional, so number the sections as they render.
+  let n = 0
+  const num = () => String(++n).padStart(2, '0')
+  const notes = study.posts.filter((p) => p.text)
+
+  return (
+    <article className="study">
+      <header className="study__head">
+        <a href="#work" className="study__back">← Back to work</a>
+        <p className="eyebrow reveal">{study.eyebrow}</p>
+        <h1 className="study__title reveal">{study.title}</h1>
+        <p className="study__intro reveal">{study.intro}</p>
+        {study.meta && (
+          <dl className="study__meta reveal">
+            {study.meta.map((m) => (
+              <div key={m.label}>
+                <dt>{m.label}</dt>
+                <dd>{m.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+      </header>
+
+      <div className="study__posts reveal" style={{ background: study.tint }}>
+        {study.posts.map((p) => (
+          <div className={`study__post ${p.aspect ? 'study__post--wide' : ''}`} style={{ aspectRatio: p.aspect, flexBasis: p.width }} key={p.title}>
+            {p.image ? <img src={p.image} alt={p.title} /> : <Placeholder label={p.title} />}
+          </div>
+        ))}
+      </div>
+
+      <div className="study__body">
+        {study.sections.map((s) => (
+          <section className="study__section reveal" key={s.heading}>
+            <h2><span>{num()}</span>{s.heading}</h2>
+            <div>{s.body.map((t) => <p key={t}>{t}</p>)}</div>
+          </section>
+        ))}
+
+        {study.decisions && (
+          <section className="study__section reveal">
+            <h2><span>{num()}</span>Design decisions</h2>
+            <ul className="decisions">
+              {study.decisions.map((d) => (
+                <li key={d.element}>
+                  <strong>{d.element}</strong>
+                  <span>{d.why}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {notes.length > 0 && (
+          <>
+            <section className="study__section study__section--bare reveal">
+              <h2><span>{num()}</span>Individual post explanation</h2>
+            </section>
+            <div className="post-notes">
+              {notes.map((p, i) => (
+                <div className="post-note reveal" key={p.title}>
+                  <div className="post-note__media" style={{ background: study.tint }}>
+                    {p.image ? <img src={p.image} alt={p.title} /> : <Placeholder label={p.title} />}
+                  </div>
+                  <div className="post-note__text">
+                    <span>Post {i + 1}</span>
+                    <h3>{p.title.replace(/^Post \d+:\s*/, '')}</h3>
+                    <p>{p.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {study.solution && (
+          <section className="study__section reveal">
+            <h2><span>{num()}</span>Final solution</h2>
+            <div>{study.solution.map((t) => <p key={t}>{t}</p>)}</div>
+          </section>
+        )}
+
+        {study.skills && (
+          <section className="study__section reveal">
+            <h2><span>{num()}</span>Skills explored</h2>
+            <ul className="skills">
+              {study.skills.map((s) => <li key={s}>{s}</li>)}
+            </ul>
+          </section>
+        )}
+      </div>
+
+      {study.takeaway && (
+        <blockquote className="study__takeaway reveal" style={{ background: study.tint }}>
+          <p className="eyebrow">Takeaway</p>
+          {study.takeaway}
+        </blockquote>
+      )}
+
+      <a href="#work" className="study__next">← Back to all work</a>
+    </article>
+  )
+}
+
+function ArchivePage() {
+  const [open, setOpen] = useState(null)
+  useReveal()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e) => e.key === 'Escape' && setOpen(null)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open])
+
+  return (
+    <article className="study">
+      <header className="study__head">
+        <a href="#work" className="study__back">← Back to work</a>
+        <h1 className="study__title reveal">{archive.title}</h1>
+        <p className="study__intro reveal">{archive.items.length} items</p>
+      </header>
+
+      <div className="gallery">
+        {archive.items.filter(Boolean).map((img) => (
+          <button className="gallery__item reveal" key={img} onClick={() => setOpen(img)}>
+            <img src={img} alt="" />
+          </button>
+        ))}
+      </div>
+
+      {open && (
+        <div className="lightbox" onClick={() => setOpen(null)} role="dialog" aria-modal="true">
+          <img src={open} alt="" />
+          <button className="lightbox__close" aria-label="Close">×</button>
+        </div>
+      )}
+
+      <a href="#work" className="study__next">← Back to all work</a>
+    </article>
+  )
+}
+
+function useRoute() {
+  const [hash, setHash] = useState(window.location.hash)
+  useEffect(() => {
+    const onHash = () => setHash(window.location.hash)
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+  if (hash.startsWith('#/archive')) return 'archive'
+  const match = hash.match(/^#\/work\/([\w-]+)/)
+  return match ? caseStudies[match[1]] : null
+}
+
 function App() {
+  const study = useRoute()
+  if (study === 'archive') {
+    return (
+      <>
+        <Nav onGreen={false} />
+        <ArchivePage />
+      </>
+    )
+  }
+  if (study) {
+    return (
+      <>
+        <Nav onGreen={false} />
+        <CaseStudy key={study.title} study={study} />
+      </>
+    )
+  }
+  return <Home />
+}
+
+function Home() {
   const contactRef = useRef(null)
   const [onGreen, setOnGreen] = useState(false)
   useReveal()
 
   useEffect(() => {
+    // Coming back from a case study: jump to the section named in the hash.
+    const id = window.location.hash.slice(1)
+    if (id) document.getElementById(id)?.scrollIntoView()
     const onScroll = () => {
       const el = contactRef.current
       if (el) setOnGreen(el.getBoundingClientRect().top <= 60)
