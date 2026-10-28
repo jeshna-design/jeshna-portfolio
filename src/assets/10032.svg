@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600" role="img" aria-label="Placeholder algar-img-04 1200 by 600">
+  <rect width="1200" height="600" fill="#d9d8d3"/>
+  <rect x="21" y="21" width="1158" height="558" fill="none" stroke="#b4b3ad" stroke-width="2" stroke-dasharray="18 13"/>
+  <g fill="#8f8e88" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" text-anchor="middle">
+    <text x="600.0" y="261" font-size="33" font-weight="600" letter-spacing="3.6">PLACEHOLDER</text>
+    <text x="600.0" y="309" font-size="27">algar-img-04</text>
+    <text x="600.0" y="348" font-size="27" fill="#a5a49e">1200 &#215; 600</text>
+  </g>
+</svg>

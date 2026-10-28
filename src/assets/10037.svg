@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="588" height="600" viewBox="0 0 588 600" role="img" aria-label="Placeholder mosaico-img-03 588 by 600">
+  <rect width="588" height="600" fill="#d9d8d3"/>
+  <rect x="21" y="21" width="546" height="558" fill="none" stroke="#b4b3ad" stroke-width="2" stroke-dasharray="18 13"/>
+  <g fill="#8f8e88" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" text-anchor="middle">
+    <text x="294.0" y="262" font-size="32" font-weight="600" letter-spacing="3.53">PLACEHOLDER</text>
+    <text x="294.0" y="309" font-size="26">mosaico-img-03</text>
+    <text x="294.0" y="347" font-size="26" fill="#a5a49e">588 &#215; 600</text>
+  </g>
+</svg>
